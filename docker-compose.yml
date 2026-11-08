@@ -1,0 +1,62 @@
+services:
+  # MongoDB Database Service
+  mongo:
+    image: mongo:7.0
+    container_name: healthylife-mongo
+    restart: unless-stopped
+    ports:
+      - "${MONGO_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - healthylife-net
+
+  # Express.js REST API Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: healthylife-backend
+    restart: unless-stopped
+    environment:
+      - PORT=${PORT:-5001}
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017/healthylife}
+      - JWT_SECRET=${JWT_SECRET:-healthylife_jwt_secret_key_super_secure_2026}
+      - NODE_ENV=${NODE_ENV:-production}
+    ports:
+      - "${PORT:-5001}:${PORT:-5001}"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:' + (process.env.PORT || 5001) + '/api/health').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 8s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - healthylife-net
+
+  # React.js Web Frontend (Nginx SPA + Reverse Proxy)
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: healthylife-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "8080:80"
+    networks:
+      - healthylife-net
+
+networks:
+  healthylife-net:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local

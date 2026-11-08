@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "HealthyLife",
+    "slug": "healthylife",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.healthylife.app"
+    },
+    "android": {
+      "package": "com.healthylife.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#183D3A"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#183D3A"
+        }
+      ],
+      "expo-asset",
+      "expo-font",
+      "expo-status-bar"
+    ],
+    "updates": {
+      "enabled": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "832064c7-9008-4135-82cc-b7693ee9f7af"
+      }
+    },
+    "owner": "cawuk"
+  }
+}
